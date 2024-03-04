@@ -1,5 +1,5 @@
 import { useContext, useRef, useState } from 'react';
-import { motion } from 'framer-motion';
+import { motion, useAnimate, stagger } from 'framer-motion';
 import { ChallengesContext } from '../store/challenges-context.jsx';
 import Modal from './Modal.jsx';
 import images from '../assets/images.js';
@@ -8,6 +8,11 @@ export default function NewChallenge({ onDone }) {
   const title = useRef();
   const description = useRef();
   const deadline = useRef();
+
+  // To imperatively animate our app
+  // First element 'scope' is a 'ref' which can be passed as a prop to elements
+  // 'animate' is a function which is triggered to imperatively animate our app
+  const [ scope, animate ] = useAnimate();
 
   const [selectedImage, setSelectedImage] = useState(null);
   const { addChallenge } = useContext(ChallengesContext);
@@ -25,12 +30,13 @@ export default function NewChallenge({ onDone }) {
       image: selectedImage,
     };
 
-    if (
-      !challenge.title.trim() ||
-      !challenge.description.trim() ||
-      !challenge.deadline.trim() ||
-      !challenge.image
-    ) {
+    if(!challenge.title.trim() || !challenge.description.trim() || 
+      !challenge.deadline.trim() || !challenge.image)
+    {
+      // we can pass elements as a string in animate
+      // use CSS selectors to target the elements
+      // or you can use className too
+      animate('input, textarea', {x: [-10, 0, 10, 0]}, {type: 'spring', duration: stagger(0.04)})
       return;
     }
 
@@ -40,7 +46,7 @@ export default function NewChallenge({ onDone }) {
 
   return (
     <Modal title="New Challenge" onClose={onDone}>
-      <form id="new-challenge" onSubmit={handleSubmit}>
+      <form id="new-challenge" onSubmit={handleSubmit} ref={scope}>
         <p>
           <label htmlFor="title">Title</label>
           <input ref={title} type="text" name="title" id="title" />
@@ -65,7 +71,9 @@ export default function NewChallenge({ onDone }) {
               // which variant must be used at which state will be pass by the parent component i.e. Modal component in our case
               variants={{
                 hidden: {opacity: 0, scale: 0.5}, 
-                visible: {opacity: 1, scale: 1}
+                visible: {opacity: 1, scale: [0.8, 1.3, 1]}
+                // we can also set an array of values which will act as keyframes
+                // i.e it will go through these values of the array
               }}
               exit={{opacity: 1, scale: 1}}
               transition={{type: 'spring'}}
