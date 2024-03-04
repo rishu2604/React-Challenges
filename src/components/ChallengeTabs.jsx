@@ -8,7 +8,8 @@ function Tab({ isSelected, onSelect, badgeCaption, children }) {
         onClick={onSelect}
       >
         {children}
-        <Badge caption={badgeCaption}></Badge>
+        {/* When we change the value that's assigned to the key, react wil destroy the old component instance and recreates or retriigers a new one */}
+        <Badge key={badgeCaption} caption={badgeCaption}></Badge>
       </button>
       {isSelected && <motion.div layoutId='tab-indicator' className="active-tab-indicator" />}
     </li>

@@ -42,6 +42,7 @@ export default function Challenges() {
         selectedType={selectedType}
       >
         {/* As we have two elements here i.e ordered list and a paragraph and we have to consitionally render both, we need to define a key here so that framer motion knows that they are apart */}
+        {/* We need a key in AnimatePresence if it has multiple children */}
         <AnimatePresence mode='wait'> 
         {/* By default the 'mode' is 'sync' */}
         {/* Now it waits for the first element to disappear before applying animation to the other */}
